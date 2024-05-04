@@ -26,8 +26,8 @@ import static org.springframework.http.HttpMethod.*;
 public class SecurityConfiguration {
 
     private static final String[] whiteListedRoutes = {
-            "/api/v1/auth/**",
             "/api/users/**",
+            "/api/login",
             "/v2/api-docs",
             "/v3/api-docs",
             "/v3/api-docs/**",
