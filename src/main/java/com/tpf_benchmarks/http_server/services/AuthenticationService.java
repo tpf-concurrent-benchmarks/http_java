@@ -36,9 +36,7 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
                 .build();
-        if (repository.findByUsername(user.getUsername()).isEmpty()) {
-            throw new RuntimeException("User already exists");
-        }
+        repository.findByUsername(user.getUsername()).orElseThrow();
         User savedUser = repository.save(user);
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
