@@ -1,6 +1,5 @@
 package com.tpf_benchmarks.http_server.entities;
 
-import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,8 +21,9 @@ import java.util.List;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Integer userId;
     @Column(unique = true, name = "user_name", length = 30)
     private String username;
     @Column(name = "password", length = 128)
