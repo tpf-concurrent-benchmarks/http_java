@@ -5,6 +5,7 @@ import com.tpf_benchmarks.http_server.dtos.AuthenticationRequest;
 import com.tpf_benchmarks.http_server.dtos.AuthenticationResponse;
 import com.tpf_benchmarks.http_server.dtos.CreateUserRequest;
 import com.tpf_benchmarks.http_server.entities.Token;
+import com.tpf_benchmarks.http_server.exceptions.UserNotFoundException;
 import com.tpf_benchmarks.http_server.repositories.TokenRepository;
 import com.tpf_benchmarks.http_server.entities.TokenType;
 import com.tpf_benchmarks.http_server.entities.User;
@@ -56,7 +57,7 @@ public class AuthenticationService {
                 )
         );
         User user = repository.findByUsername(request.getUsername())
-                .orElseThrow();
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
