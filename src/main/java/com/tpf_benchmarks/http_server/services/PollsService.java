@@ -23,12 +23,6 @@ public class PollsService {
 
     @Transactional
     public PollCreatedResponse createPoll(CreatePollRequest request, String authToken) {
-        if (request.getOptions().length < 2) {
-            throw new IllegalArgumentException("A poll must have at least 2 options");
-        }
-        if (request.getTitle().isEmpty()) {
-            throw new IllegalArgumentException("A poll must have a title");
-        }
         String userName = jwtService.extractUsername(authToken);
         User creator = userRepository.findByUsername(userName).orElseThrow();
 
@@ -36,8 +30,8 @@ public class PollsService {
         pollRepository.save(poll);
         String[] pollOptions = request.getOptions();
         for (int i = 0; i < pollOptions.length; i++) {
-            var pollOptionId = PollOption.builder().poll(poll).optionNum(i).optionText(pollOptions[i]).build();
-            pollOptionRepository.save(pollOptionId);
+            var pollOption = PollOption.builder().poll(poll).optionNum(i).optionText(pollOptions[i]).build();
+            pollOptionRepository.save(pollOption);
         }
 
         return new PollCreatedResponse(poll.getPollId());
