@@ -3,6 +3,7 @@ package com.tpf_benchmarks.http_server.controllers;
 import com.tpf_benchmarks.http_server.dtos.CreatePollRequest;
 import com.tpf_benchmarks.http_server.dtos.PollCreatedResponse;
 import com.tpf_benchmarks.http_server.services.PollsService;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ public class PollsController {
     private final PollsService pollsService;
 
     @PostMapping
+    @ApiResponse(description = "Creates a new poll", responseCode = "200")
     public ResponseEntity<PollCreatedResponse> register(
             @RequestBody CreatePollRequest request, @RequestHeader("Authorization") String authToken
     ) {
