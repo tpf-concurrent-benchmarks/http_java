@@ -1,12 +1,14 @@
 package com.tpf_benchmarks.http_server.repositories;
 
 import com.tpf_benchmarks.http_server.entities.Token;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
 
+@Hidden
 public interface TokenRepository extends JpaRepository<Token, Integer> {
 
     @Query(value = """

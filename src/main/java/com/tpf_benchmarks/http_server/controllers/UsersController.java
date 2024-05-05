@@ -4,6 +4,7 @@ import com.tpf_benchmarks.http_server.dtos.LoginResponse;
 import com.tpf_benchmarks.http_server.dtos.CreateUserRequest;
 import com.tpf_benchmarks.http_server.services.AuthenticationService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
+@Tag(name = "Users")
 public class UsersController {
 
     private final AuthenticationService authService;

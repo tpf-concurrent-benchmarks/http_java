@@ -4,6 +4,7 @@ import com.tpf_benchmarks.http_server.dtos.LoginRequest;
 import com.tpf_benchmarks.http_server.dtos.LoginResponse;
 import com.tpf_benchmarks.http_server.services.AuthenticationService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/login")
 @RequiredArgsConstructor
+@Tag(name = "Login")
 public class LoginController {
 
     private final AuthenticationService authService;

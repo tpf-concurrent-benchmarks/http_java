@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 
 @OpenAPIDefinition(
         info = @Info(
-                description = "OpenAPI documentation for Spring Security",
+                description = "OpenAPI documentation for poll HTTP server",
                 title = "OpenAPI Specification",
                 version = "1.0"
         ),
