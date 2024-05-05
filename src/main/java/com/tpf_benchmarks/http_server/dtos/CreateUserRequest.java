@@ -1,6 +1,6 @@
 package com.tpf_benchmarks.http_server.dtos;
 
-import com.tpf_benchmarks.http_server.entities.Role;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,9 +10,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
+public class CreateUserRequest {
 
-    private String username;
+    @JsonProperty("username")
+    private String userName;
+    @JsonProperty("password")
     private String password;
-    private Role role;
 }

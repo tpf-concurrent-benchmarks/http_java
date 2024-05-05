@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 @Data
@@ -23,18 +24,18 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue
     private Integer id;
+    @Column(unique = true, name = "user_name")
     private String username;
+    @Column(name = "password")
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
 
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return role.getAuthorities();
+        return new HashSet<>();
     }
 
     @Override
