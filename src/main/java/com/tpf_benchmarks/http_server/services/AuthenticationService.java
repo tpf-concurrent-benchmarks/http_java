@@ -3,7 +3,7 @@ package com.tpf_benchmarks.http_server.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tpf_benchmarks.http_server.dtos.AuthenticationRequest;
 import com.tpf_benchmarks.http_server.dtos.AuthenticationResponse;
-import com.tpf_benchmarks.http_server.dtos.RegisterRequest;
+import com.tpf_benchmarks.http_server.dtos.CreateUserRequest;
 import com.tpf_benchmarks.http_server.entities.Token;
 import com.tpf_benchmarks.http_server.repositories.TokenRepository;
 import com.tpf_benchmarks.http_server.entities.TokenType;
@@ -30,13 +30,14 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    public AuthenticationResponse register(CreateUserRequest request) {
         User user = User.builder()
-                .username(request.getUsername())
+                .username(request.getUserName())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
                 .build();
-        repository.findByUsername(user.getUsername()).orElseThrow();
+        if (repository.findByUsername(user.getUsername()).isPresent()) {
+            throw new RuntimeException("User already exists");
+        }
         User savedUser = repository.save(user);
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
