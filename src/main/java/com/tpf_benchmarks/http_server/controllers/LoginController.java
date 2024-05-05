@@ -1,7 +1,7 @@
 package com.tpf_benchmarks.http_server.controllers;
 
-import com.tpf_benchmarks.http_server.dtos.AuthenticationRequest;
-import com.tpf_benchmarks.http_server.dtos.AuthenticationResponse;
+import com.tpf_benchmarks.http_server.dtos.LoginRequest;
+import com.tpf_benchmarks.http_server.dtos.LoginResponse;
 import com.tpf_benchmarks.http_server.services.AuthenticationService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +21,8 @@ public class LoginController {
     @PostMapping
     @ApiResponse(description = "Login a user", responseCode = "200")
     @ApiResponse(description = "Invalid credentials", responseCode = "401")
-    public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request
+    public ResponseEntity<LoginResponse> authenticate(
+            @RequestBody LoginRequest request
     ) {
         return ResponseEntity.ok(authService.authenticate(request));
     }

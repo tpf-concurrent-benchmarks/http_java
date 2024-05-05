@@ -1,8 +1,8 @@
 package com.tpf_benchmarks.http_server.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tpf_benchmarks.http_server.dtos.AuthenticationRequest;
-import com.tpf_benchmarks.http_server.dtos.AuthenticationResponse;
+import com.tpf_benchmarks.http_server.dtos.LoginRequest;
+import com.tpf_benchmarks.http_server.dtos.LoginResponse;
 import com.tpf_benchmarks.http_server.dtos.CreateUserRequest;
 import com.tpf_benchmarks.http_server.entities.Token;
 import com.tpf_benchmarks.http_server.exceptions.UserNotFoundException;
@@ -31,7 +31,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(CreateUserRequest request) {
+    public LoginResponse register(CreateUserRequest request) {
         User user = User.builder()
                 .username(request.getUserName())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -43,13 +43,13 @@ public class AuthenticationService {
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
         saveUserToken(savedUser, jwtToken);
-        return AuthenticationResponse.builder()
+        return LoginResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public LoginResponse authenticate(LoginRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
@@ -62,7 +62,7 @@ public class AuthenticationService {
         String refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
-        return AuthenticationResponse.builder()
+        return LoginResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
@@ -109,7 +109,7 @@ public class AuthenticationService {
                 var accessToken = jwtService.generateToken(user);
                 revokeAllUserTokens(user);
                 saveUserToken(user, accessToken);
-                var authResponse = AuthenticationResponse.builder()
+                var authResponse = LoginResponse.builder()
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
                         .build();
