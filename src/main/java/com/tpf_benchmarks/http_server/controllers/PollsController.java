@@ -24,4 +24,14 @@ public class PollsController {
         String token = authToken.substring(7);
         return ResponseEntity.ok(pollsService.createPoll(request, token));
     }
+
+    @PostMapping("/{poll_id}/vote")
+    @ApiResponse(description = "Votes an option in a poll", responseCode = "200")
+    public ResponseEntity<Void> vote(
+            @PathVariable("poll_id") int pollId, @RequestParam("option") int optionId, @RequestHeader("Authorization") String authToken
+    ) {
+        String token = authToken.substring(7);
+        pollsService.votePollOption(pollId, optionId, token);
+        return ResponseEntity.ok().build();
+    }
 }

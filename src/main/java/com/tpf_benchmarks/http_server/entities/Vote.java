@@ -1,6 +1,7 @@
 package com.tpf_benchmarks.http_server.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +24,9 @@ public class Vote {
         @Column(name = "poll_id")
         private Integer pollId;
 
+        @Column(name = "option_num")
+        private Integer optionNum;
+
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "user_id")
         @MapsId("userId")
@@ -38,5 +42,6 @@ public class Vote {
                 @JoinColumn(name = "poll_id", referencedColumnName = "poll_id", insertable = false, updatable = false),
                 @JoinColumn(name = "option_num", referencedColumnName = "option_num", insertable = false, updatable = false)
         })
+        @NotNull
         private PollOption pollOption;
 }
