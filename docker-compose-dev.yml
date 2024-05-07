@@ -1,7 +1,6 @@
 services:
-  postgres:
-    container_name: postgres-sql
-    image: postgres:12.1
+  postgres_db:
+    image: postgres:16.2
     environment:
       POSTGRES_USER: tpf_user
       POSTGRES_PASSWORD: password
@@ -11,3 +10,16 @@ services:
       - ./postgres_data:/data/postgres
     ports:
       - "5432:5432"
+  http_java:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    ports:
+        - "8080:8080"
+    depends_on:
+      - postgres_db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/polls
+      - SPRING_DATASOURCE_USERNAME=tpf_user
+      - SPRING_DATASOURCE_PASSWORD=password
+    command: sh -c "sleep 10 && java -jar /app/application.jar"
