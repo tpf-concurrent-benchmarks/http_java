@@ -25,8 +25,8 @@ public class PollsController {
     public ResponseEntity<PollCreatedResponse> register(
             @RequestBody CreatePollRequest request, @RequestHeader("Authorization") String authToken
     ) {
-        String token = authToken.substring(7);
-        return ResponseEntity.ok(pollsService.createPoll(request, token));
+        String userName = extractUsername(authToken);
+        return ResponseEntity.ok(pollsService.createPoll(request, userName));
     }
 
     @PostMapping("/{poll_id}/vote")
@@ -34,8 +34,8 @@ public class PollsController {
     public ResponseEntity<Void> vote(
             @PathVariable("poll_id") int pollId, @RequestParam("option") int optionId, @RequestHeader("Authorization") String authToken
     ) {
-        String token = authToken.substring(7);
-        pollsService.votePollOption(pollId, optionId, token);
+        String userName = extractUsername(authToken);
+        pollsService.votePollOption(pollId, optionId, userName);
         return ResponseEntity.ok().build();
     }
 
@@ -51,10 +51,14 @@ public class PollsController {
 
     @DeleteMapping("/{poll_id}")
     public ResponseEntity<Void> deletePoll(@PathVariable("poll_id") int pollId, @RequestHeader("Authorization") String authToken) {
-        String token = authToken.substring(7);
-        String userName = jwtService.extractUsername(token);
+        String userName = extractUsername(authToken);
         pollsService.deletePoll(pollId, userName);
         return ResponseEntity.ok().build();
+    }
+
+    private String extractUsername(String authToken) {
+        String token = authToken.substring(7);
+        return jwtService.extractUsername(token);
     }
 
 }

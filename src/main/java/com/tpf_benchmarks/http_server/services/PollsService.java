@@ -31,8 +31,7 @@ public class PollsService {
     private final JwtService jwtService;
 
     @Transactional
-    public PollCreatedResponse createPoll(CreatePollRequest request, String authToken) {
-        String userName = jwtService.extractUsername(authToken);
+    public PollCreatedResponse createPoll(CreatePollRequest request, String userName) {
         User creator = userRepository.findByUsername(userName).orElseThrow(() -> new UserNotFoundException(String.format("User with username %s not found", userName)));
 
         Poll poll = Poll.builder().pollTopic(request.getTitle()).user(creator).build();
@@ -47,8 +46,7 @@ public class PollsService {
     }
 
     @Transactional
-    public void votePollOption(int pollId, int optionId, String token) {
-        String userName = jwtService.extractUsername(token);
+    public void votePollOption(int pollId, int optionId, String userName) {
         User voter = userRepository.findByUsername(userName).orElseThrow(() -> new UserNotFoundException(String.format("User with username %s not found", userName)));
         Poll poll = pollRepository.findById(pollId).orElseThrow(() -> new PollNotFoundException(String.format("Poll with id %s not found", pollId)));
         PollOption pollOption = pollOptionRepository.findByPollAndOptionNum(poll, optionId).orElseThrow(() -> new PollOptionNotFoundException(String.format("Poll option with id %s not found", optionId)));
