@@ -1,7 +1,9 @@
 package com.tpf_benchmarks.http_server.services;
 
 import com.tpf_benchmarks.http_server.dtos.CreatePollRequest;
+import com.tpf_benchmarks.http_server.dtos.OptionsDTO;
 import com.tpf_benchmarks.http_server.dtos.PollCreatedResponse;
+import com.tpf_benchmarks.http_server.dtos.PollsResponse;
 import com.tpf_benchmarks.http_server.entities.Poll;
 import com.tpf_benchmarks.http_server.entities.PollOption;
 import com.tpf_benchmarks.http_server.entities.User;
@@ -16,6 +18,8 @@ import com.tpf_benchmarks.http_server.repositories.VoteRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -59,5 +63,21 @@ public class PollsService {
         } else {
             voteRepository.delete(vote);
         }
+    }
+
+    public PollsResponse getPoll(int pollId) {
+        Poll poll = pollRepository.findById(pollId).orElseThrow(() -> new PollNotFoundException(String.format("Poll with id %s not found", pollId)));
+        PollOption[] pollOptions = pollOptionRepository.findByPoll(poll).toArray(PollOption[]::new);
+        PollsResponse pollsResponse = new PollsResponse();
+        ArrayList<OptionsDTO> options = new ArrayList<>();
+        pollsResponse.setId(pollId);
+        pollsResponse.setTitle(poll.getPollTopic());
+        for (PollOption pollOption : pollOptions) {
+            int numberOfVotes = voteRepository.countByPollIdAndOptionNum(pollId, pollOption.getOptionNum());
+            var optionDTO = OptionsDTO.builder().name(pollOption.getOptionText()).votes(numberOfVotes).build();
+            options.add(optionDTO);
+        }
+        pollsResponse.setOptions(options.toArray(OptionsDTO[]::new));
+        return pollsResponse;
     }
 }
