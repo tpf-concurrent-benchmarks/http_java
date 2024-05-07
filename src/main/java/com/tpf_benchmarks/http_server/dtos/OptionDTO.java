@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OptionsDTO {
+public class OptionDTO {
 
         public String name;
 

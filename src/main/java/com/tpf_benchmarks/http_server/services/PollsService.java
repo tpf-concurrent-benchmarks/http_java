@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -28,7 +29,6 @@ public class PollsService {
     private final PollOptionRepository pollOptionRepository;
     private final UserRepository userRepository;
     private final VoteRepository voteRepository;
-    private final JwtService jwtService;
 
     @Transactional
     public PollCreatedResponse createPoll(CreatePollRequest request, String userName) {
@@ -64,22 +64,22 @@ public class PollsService {
 
     public PollsResponse getPoll(int pollId) {
         Poll poll = pollRepository.findById(pollId).orElseThrow(() -> new PollNotFoundException(String.format("Poll with id %s not found", pollId)));
-        PollOption[] pollOptions = pollOptionRepository.findByPoll(poll).toArray(PollOption[]::new);
+        List<PollOption> pollOptions = pollOptionRepository.findByPoll(poll);
         PollsResponse pollsResponse = new PollsResponse();
-        ArrayList<OptionsDTO> options = new ArrayList<>();
+        ArrayList<OptionDTO> options = new ArrayList<>();
         pollsResponse.setId(pollId);
         pollsResponse.setTitle(poll.getPollTopic());
         for (PollOption pollOption : pollOptions) {
             int numberOfVotes = voteRepository.countByPollIdAndOptionNum(pollId, pollOption.getOptionNum());
-            var optionDTO = OptionsDTO.builder().name(pollOption.getOptionText()).votes(numberOfVotes).build();
+            var optionDTO = OptionDTO.builder().name(pollOption.getOptionText()).votes(numberOfVotes).build();
             options.add(optionDTO);
         }
-        pollsResponse.setOptions(options.toArray(OptionsDTO[]::new));
+        pollsResponse.setOptions(options);
         return pollsResponse;
     }
 
     public GetAllPollsResponse getPolls() {
-        Poll[] polls = pollRepository.findAll().toArray(Poll[]::new);
+        List<Poll> polls = pollRepository.findAll();
         GetAllPollsResponse responseDTO = new GetAllPollsResponse();
         ArrayList<PollDTO> pollDTOs = new ArrayList<>();
         for (Poll poll : polls) {
