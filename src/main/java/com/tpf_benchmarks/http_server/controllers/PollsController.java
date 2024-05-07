@@ -1,6 +1,7 @@
 package com.tpf_benchmarks.http_server.controllers;
 
 import com.tpf_benchmarks.http_server.dtos.CreatePollRequest;
+import com.tpf_benchmarks.http_server.dtos.GetAllPollsResponse;
 import com.tpf_benchmarks.http_server.dtos.PollCreatedResponse;
 import com.tpf_benchmarks.http_server.dtos.PollsResponse;
 import com.tpf_benchmarks.http_server.services.PollsService;
@@ -40,4 +41,10 @@ public class PollsController {
     public PollsResponse getPoll(@PathVariable("poll_id") int pollId) {
         return pollsService.getPoll(pollId);
     }
+
+    @GetMapping
+    public GetAllPollsResponse getPolls() {
+        return pollsService.getPolls();
+    }
+
 }

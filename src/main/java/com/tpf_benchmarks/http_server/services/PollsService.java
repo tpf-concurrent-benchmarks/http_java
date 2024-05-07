@@ -1,9 +1,6 @@
 package com.tpf_benchmarks.http_server.services;
 
-import com.tpf_benchmarks.http_server.dtos.CreatePollRequest;
-import com.tpf_benchmarks.http_server.dtos.OptionsDTO;
-import com.tpf_benchmarks.http_server.dtos.PollCreatedResponse;
-import com.tpf_benchmarks.http_server.dtos.PollsResponse;
+import com.tpf_benchmarks.http_server.dtos.*;
 import com.tpf_benchmarks.http_server.entities.Poll;
 import com.tpf_benchmarks.http_server.entities.PollOption;
 import com.tpf_benchmarks.http_server.entities.User;
@@ -79,5 +76,17 @@ public class PollsService {
         }
         pollsResponse.setOptions(options.toArray(OptionsDTO[]::new));
         return pollsResponse;
+    }
+
+    public GetAllPollsResponse getPolls() {
+        Poll[] polls = pollRepository.findAll().toArray(Poll[]::new);
+        GetAllPollsResponse responseDTO = new GetAllPollsResponse();
+        ArrayList<PollDTO> pollDTOs = new ArrayList<>();
+        for (Poll poll : polls) {
+            PollDTO pollDTO = PollDTO.builder().id(poll.getPollId()).title(poll.getPollTopic()).build();
+            pollDTOs.add(pollDTO);
+        }
+        responseDTO.setPolls(pollDTOs);
+        return responseDTO;
     }
 }
