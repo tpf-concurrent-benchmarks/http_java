@@ -1,0 +1,13 @@
+services:
+  postgres:
+    container_name: postgres-sql
+    image: postgres:12.1
+    environment:
+      POSTGRES_USER: tpf_user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: polls
+      PGDATA: /data/postgres
+    volumes:
+      - ./postgres_data:/data/postgres
+    ports:
+      - "5432:5432"
