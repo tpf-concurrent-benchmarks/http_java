@@ -13,4 +13,6 @@ public interface VoteRepository extends JpaRepository<Vote, VoteId> {
     Optional<Vote> findByUserIdAndPollId(Integer userId, int pollId);
 
     int countByPollIdAndOptionNum(int pollId, Integer optionNum);
+
+    void deleteByPollId(int pollId);
 }

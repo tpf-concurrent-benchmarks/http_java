@@ -7,6 +7,7 @@ import com.tpf_benchmarks.http_server.entities.User;
 import com.tpf_benchmarks.http_server.entities.Vote;
 import com.tpf_benchmarks.http_server.exceptions.PollNotFoundException;
 import com.tpf_benchmarks.http_server.exceptions.PollOptionNotFoundException;
+import com.tpf_benchmarks.http_server.exceptions.UserIsNotCreatorException;
 import com.tpf_benchmarks.http_server.exceptions.UserNotFoundException;
 import com.tpf_benchmarks.http_server.repositories.PollOptionRepository;
 import com.tpf_benchmarks.http_server.repositories.PollRepository;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -88,5 +90,17 @@ public class PollsService {
         }
         responseDTO.setPolls(pollDTOs);
         return responseDTO;
+    }
+
+    @Transactional
+    public void deletePoll(int pollId, String userName) {
+        User user = userRepository.findByUsername(userName).orElseThrow(() -> new UserNotFoundException(String.format("User with username %s not found", userName)));
+        Poll poll = pollRepository.findById(pollId).orElseThrow(() -> new PollNotFoundException(String.format("Poll with id %s not found", pollId)));
+        if (!Objects.equals(poll.getUser().getUserId(), user.getUserId())) {
+            throw new UserIsNotCreatorException("User is not the creator of the poll");
+        }
+        voteRepository.deleteByPollId(pollId);
+        pollOptionRepository.deleteByPoll(poll);
+        pollRepository.deleteById(pollId);
     }
 }

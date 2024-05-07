@@ -6,8 +6,6 @@ import com.tpf_benchmarks.http_server.entities.PollOptionId;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -16,4 +14,6 @@ public interface PollOptionRepository extends JpaRepository<PollOption, PollOpti
     Optional<PollOption> findByPollAndOptionNum(Poll poll, int optionId);
 
     Collection<PollOption> findByPoll(Poll poll);
+
+    void deleteByPoll(Poll poll);
 }
