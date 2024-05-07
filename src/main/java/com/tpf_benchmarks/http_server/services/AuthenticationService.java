@@ -41,11 +41,11 @@ public class AuthenticationService {
         }
         User savedUser = repository.save(user);
         String jwtToken = jwtService.generateToken(user);
-        String refreshToken = jwtService.generateRefreshToken(user);
+        jwtService.generateRefreshToken(user);
         saveUserToken(savedUser, jwtToken);
         return LoginResponse.builder()
                 .accessToken(jwtToken)
-                .refreshToken(refreshToken)
+                .type("Bearer")
                 .build();
     }
 
@@ -59,12 +59,12 @@ public class AuthenticationService {
         User user = repository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
         String jwtToken = jwtService.generateToken(user);
-        String refreshToken = jwtService.generateRefreshToken(user);
+        jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
         return LoginResponse.builder()
                 .accessToken(jwtToken)
-                .refreshToken(refreshToken)
+                .type("Bearer")
                 .build();
     }
 
@@ -111,7 +111,7 @@ public class AuthenticationService {
                 saveUserToken(user, accessToken);
                 var authResponse = LoginResponse.builder()
                         .accessToken(accessToken)
-                        .refreshToken(refreshToken)
+                        .type("Bearer")
                         .build();
                 new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
             }
