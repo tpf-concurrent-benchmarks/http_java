@@ -1,3 +1,5 @@
+version: "3.7"
+
 services:
   graphite:
     image: graphiteapp/graphite-statsd:1.1.10-4
@@ -11,6 +13,10 @@ services:
     ports:
       - "8080:8080"
       - "8125:8125/udp"
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
 
   grafana:
     image: efoppiano/grafana:0.1
@@ -26,11 +32,19 @@ services:
       - GF_LOG_FILTERS=rendering:debug
     depends_on:
       - graphite
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
 
   renderer:
     image: grafana/grafana-image-renderer:latest
     ports:
       - "8082:8081"
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.47.0
@@ -50,6 +64,28 @@ services:
       - "/dev/disk/:/dev/disk:ro"
     ports:
       - "8888:8080"
+    deploy:
+      mode: global
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+
+  app:
+    image: http_java
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/polls
+      - SPRING_DATASOURCE_USERNAME=tpf_user
+      - SPRING_DATASOURCE_PASSWORD=password
+    ports:
+      - "8100:8080"
+    deploy:
+      restart_policy:
+        condition: none
+    command: sh -c "sleep 10 && java -jar /app/application.jar"
+    depends_on:
+      - postgres_db
 
   postgres_db:
     image: postgres:16.2
@@ -62,20 +98,7 @@ services:
       - ./postgres_data:/data/postgres
     ports:
       - "5432:5432"
-  http_java:
-    build:
-        context: .
-        dockerfile: Dockerfile
-    ports:
-        - "8100:8080"
-    depends_on:
-      - postgres_db
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/polls
-      - SPRING_DATASOURCE_USERNAME=tpf_user
-      - SPRING_DATASOURCE_PASSWORD=password
-    command: sh -c "sleep 10 && java -jar /app/application.jar"
 
 volumes:
   grafana_config:
-    driver: local
+    external: true
