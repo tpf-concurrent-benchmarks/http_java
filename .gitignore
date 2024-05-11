@@ -34,3 +34,9 @@ build/
 
 # Graphite
 graphite
+
+# Postgres
+postgres_data
+
+# Environment variables
+.env

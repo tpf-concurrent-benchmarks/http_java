@@ -54,9 +54,9 @@ services:
   postgres_db:
     image: postgres:16.2
     environment:
-      POSTGRES_USER: tpf_user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: polls
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
       PGDATA: /data/postgres
     volumes:
       - ./postgres_data:/data/postgres
@@ -71,11 +71,15 @@ services:
     depends_on:
       - postgres_db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/polls
-      - SPRING_DATASOURCE_USERNAME=tpf_user
-      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_DATASOURCE_URL=${DATABASE_URL}
+      - SPRING_DATASOURCE_USERNAME=${DATABASE_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DATABASE_PASSWORD}
     command: sh -c "sleep 10 && java -jar /app/application.jar"
 
 volumes:
   grafana_config:
     driver: local
+
+networks:
+  default:
+    attachable: true

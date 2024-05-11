@@ -75,9 +75,9 @@ services:
   app:
     image: http_java
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/polls
-      - SPRING_DATASOURCE_USERNAME=tpf_user
-      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_DATASOURCE_URL=${DATABASE_URL}
+      - SPRING_DATASOURCE_USERNAME=${DATABASE_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DATABASE_PASSWORD}
     ports:
       - "8100:8080"
     deploy:
@@ -90,9 +90,9 @@ services:
   postgres_db:
     image: postgres:16.2
     environment:
-      POSTGRES_USER: tpf_user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: polls
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
       PGDATA: /data/postgres
     volumes:
       - ./postgres_data:/data/postgres
@@ -102,3 +102,7 @@ services:
 volumes:
   grafana_config:
     external: true
+
+networks:
+  default:
+    attachable: true
