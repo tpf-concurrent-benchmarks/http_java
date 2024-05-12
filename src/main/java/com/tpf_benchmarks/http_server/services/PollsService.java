@@ -38,7 +38,7 @@ public class PollsService {
         pollRepository.save(poll);
         String[] pollOptions = request.getOptions();
         for (int i = 0; i < pollOptions.length; i++) {
-            var pollOption = PollOption.builder().poll(poll).optionNum(i + 1).optionText(pollOptions[i]).build();
+            var pollOption = PollOption.builder().poll(poll).optionNum(i).optionText(pollOptions[i]).build();
             pollOptionRepository.save(pollOption);
         }
 
